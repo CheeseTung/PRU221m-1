@@ -17,7 +17,6 @@ public class AudioManager : MonoBehaviour
     public AudioClip dead, dead2, gameover, jump;
 
     public AudioClip musicIsPlay;
-
     public void PlayMusicBackground(bool isPlayMusic)
     {
         if (isPlayMusic) { musicSource.Play();}
