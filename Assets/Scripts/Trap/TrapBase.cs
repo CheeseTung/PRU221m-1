@@ -53,6 +53,7 @@ public class TrapBase : MonoBehaviour
 
         if (collision.gameObject.tag == "Player")
         {
+            if(trapType == TrapType.Effect)
             attacked();
         }
     }
