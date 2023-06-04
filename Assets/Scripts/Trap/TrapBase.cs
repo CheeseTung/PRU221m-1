@@ -5,13 +5,13 @@ using UnityEngine;
 public class TrapBase : MonoBehaviour
 {
     // Start is called before the first frame update
-    private HeartManager heartManager;
+    protected HeartManager heartManager;
 
     protected TrapType trapType;
 
-    private CharacterController character;
-    private AudioManager audioManager;
-    private GameOverScript gameOverScreen;
+    protected CharacterController character;
+    protected AudioManager audioManager;
+    protected GameOverScript gameOverScreen;
     private void Awake()
     {
         character = FindObjectOfType<CharacterController>();
@@ -24,12 +24,15 @@ public class TrapBase : MonoBehaviour
     {
         Debug.Log("TrapBase");
     }
-    void attacked()
+    public void attacked()
     {
-        character.SetDead(true);
-        Instantiate(character.getBlood(), character.transform.position, character.transform.rotation);
-        audioManager.PlaySFX(audioManager.dead2);
-        StartCoroutine(waiter());
+        if (character != null && audioManager != null && heartManager != null)
+        {
+            character.SetDead(true);
+            Instantiate(character.getBlood(), character.transform.position, character.transform.rotation);
+            audioManager.PlaySFX(audioManager.dead2);
+            StartCoroutine(waiter());
+        }
     }
     IEnumerator waiter()
     {
@@ -48,13 +51,13 @@ public class TrapBase : MonoBehaviour
             character.SetBodyType(RigidbodyType2D.Dynamic);
         }
     }
-    private void OnCollisionEnter2D(Collision2D collision)
+    protected virtual void OnCollisionEnter2D(Collision2D collision)
     {
 
         if (collision.gameObject.tag == "Player")
         {
-            if(trapType == TrapType.Effect)
-            attacked();
+            if (trapType == TrapType.Effect)
+                attacked();
         }
     }
 
@@ -67,8 +70,9 @@ public class TrapBase : MonoBehaviour
         }
     }
 
-    void CheckpointRespawn()
+    public void CheckpointRespawn()
     {
+        Debug.Log("?????");
         //respawn
         character.transform.position = new Vector3(character.getCheckPointPassed().x, character.getCheckPointPassed().y, 0);
         //minus HP

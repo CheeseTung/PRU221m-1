@@ -1,5 +1,6 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class FallingTrap : TrapBase
@@ -10,6 +11,10 @@ public class FallingTrap : TrapBase
     public float mass;
     private void Awake()
     {
+        character = FindObjectOfType<CharacterController>();
+        audioManager = FindObjectOfType<AudioManager>();
+        heartManager = FindObjectOfType<HeartManager>();
+        gameOverScreen = FindObjectOfType<GameOverScript>();
         trapType = TrapType.Effect;
     }
     void OnTriggerEnter2D(Collider2D collision)
@@ -18,16 +23,22 @@ public class FallingTrap : TrapBase
         if (!fall)
         {
             if (collision.gameObject.tag == "Player")
-            {
+            {              
                 rb.isKinematic = false;
                 rb.gravityScale = gravity;
                 rb.mass = mass;
                 fall = true;
+                // Chỉ chạy rơi xuống chứ không tác động
+
             }
         }
     }
+    //public override void attacked()
+    //{
+    //    base.attacked();
+    //}
 
-    void OnCollisionEnter2D(Collision2D collision)
+    protected override void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "Hazard")
         {
@@ -36,6 +47,10 @@ public class FallingTrap : TrapBase
         if (collision.gameObject.tag == "Trap")
         {
             gameObject.tag = "Trap";
+        }
+        if (collision.gameObject != null && collision.gameObject.tag == "Player")
+        {
+            attacked();
         }
     }
 }
